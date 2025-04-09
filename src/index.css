@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .container {
+    @apply px-5 max-w-screen-xl
+  }
+  .btn {
+    @apply w-full p-2 bg-green-500 transition-colors duration-300 hover:bg-green-600 text-white rounded-md
+  }
+}
+
+.active {
+  color: #374151;
+}
