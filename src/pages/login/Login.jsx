@@ -1,29 +1,30 @@
 import axios from 'axios';
 import { useFormik } from 'formik'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import * as yup from 'yup'
+import { UserContext } from '../../context/UserContext';
 
 export default function Login() {
+  let { setUserLogin } = useContext(UserContext);
   let [apiError, setApiError] = useState('');
   let [isLoading, setIsLoading] = useState(false);
   let navigate = useNavigate();
-  function handleLogin(values) {
-    setIsLoading(true);
-    axios.post('https://ecommerce.routemisr.com/api/v1/auth/signin', values)
-      .then((res) => {
-        setIsLoading(false);
-        if (res.data.message === "success") {
-          localStorage.setItem('user-token', res.data.token);
-          navigate('/');
-        }
-      })
-      .catch((err) => {
-        setIsLoading(false);
-        setApiError(err.response.data.message);
-      })
+  async function handleLogin(values) {
+    try {
+      setIsLoading(true);
+      let {data} = await axios.post('https://ecommerce.routemisr.com/api/v1/auth/signin', values)
+      setIsLoading(false);
+      if (data.message === "success") {
+        localStorage.setItem('user-token', data.token);
+        setUserLogin(data.token);
+        navigate('/');
+      }
+    } catch (err) {
+      setIsLoading(false);
+      setApiError(err.response.data.message);
+    }
   }
-  // custom validation
   let validationSchema = yup.object().shape({
     email: yup.string()
       .email('enter valid email')
@@ -38,7 +39,6 @@ export default function Login() {
       email: '',
       password: '',
     },
-    // validate: validation,
     validationSchema,
     onSubmit: handleLogin
   })
