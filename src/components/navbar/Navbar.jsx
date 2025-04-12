@@ -51,8 +51,11 @@ export default function Navbar() {
               <a href="https://www.linkedin.com/in/ahmed-yasser-21382a267/" className='text-gray-400 p-2 text-lg font-semibold transition-colors'><i className="fa-brands fa-linkedin"></i></a>
             </li>
             {userLogin !== null ? <>
+              <li>
+              <NavLink to="/cart" className='text-gray-400 p-2 text-lg font-semibold transition-colors'>cart</NavLink>
+              </li>
               <span onClick={signout} className='text-gray-400 p-2 text-lg font-semibold transition-colors cursor-pointer'>logout</span>
-            </> : <>
+              </> : <>
               <li>
                 <NavLink to="/login" className='text-gray-400 p-2 text-lg font-semibold transition-colors'>login</NavLink>
               </li>

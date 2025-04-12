@@ -13,6 +13,12 @@ import ProtectedRoute from './routes/ProtectedRoute/ProtectedRoute'
 import AuthRoute from './routes/AuthRoute/AuthRoute'
 import Cart from './pages/cart/Cart';
 import ProductDetails from './pages/product-details/ProductDetails'
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import CartContextProvider from './context/CartContext'
+import { Toaster } from 'react-hot-toast';
+
+let query = new QueryClient();
 
 let routes = createBrowserRouter([
   {path: '', element: <Layout />, children: [
@@ -32,7 +38,13 @@ function App() {
   return (
     <>
       <UserContextProvider>
-        <RouterProvider router={routes} ></RouterProvider>
+        <QueryClientProvider client={query}>
+          <CartContextProvider>
+            <RouterProvider router={routes} ></RouterProvider>
+            <Toaster />
+            <ReactQueryDevtools />
+          </CartContextProvider>
+        </QueryClientProvider>
       </UserContextProvider>
     </>
   )

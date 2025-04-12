@@ -1,25 +1,40 @@
-import axios from 'axios'
-import React, { useEffect, useState } from 'react'
+import React, { useContext } from 'react'
 import { Link } from 'react-router-dom';
+import useProducts from '../../hooks/useProducts';
+import { CartContext } from '../../context/CartContext';
+import toast from 'react-hot-toast';
 
 export default function PopularProducts() {
-  let [products, setProducts] = useState([]);
-  async function getAllProducts() {
-    try {
-      let { data } = await axios.get('https://ecommerce.routemisr.com/api/v1/products')
-      setProducts(data.data);
-    } catch (error) {
-      console.log(error.response.data.message);
+  let {data, isError, error, isLoading} = useProducts();
+  let {addProductToCart} = useContext(CartContext);
+
+  async function addToCart(productId) {
+    let res = await addProductToCart(productId);
+    if (res.data.status === "success") {
+      toast.success(res.data.message, {
+        position: 'top-right'
+      })
+    } else {
+      toast.error(res.data.message, {
+        position: 'top-right'
+      })
     }
   }
-  useEffect(() => {
-    getAllProducts();
-  }, []);
+
+  if (isError) {
+    return <p> {error} </p>
+  }
+
+  if (isLoading) {
+    return <div className='flex justify-center items-center h-screen'>
+      <span className="loader"></span>
+    </div>
+  }
   return (
-    <>
+    <section className='popular-products'>
       <h2 className='text-green-600 mb-4 font-bold text-3xl'>Popular Products</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
-        {products.slice(0,12).map((product) => (
+        {data.slice(0,12).map((product) => (
           <div key={product.id} className="card border border-green-500 pt-4 pb-2 px-2 relative rounded-2xl">
             <Link to={`product/${product.id}`}>
               <div className="image cursor-pointer">
@@ -39,11 +54,11 @@ export default function PopularProducts() {
               <span className="heart absolute top-3 right-3 cursor-pointer">
                 <i className="fa-solid fa-heart text-xl"></i>
               </span>
-              <button className="bg-green-600 text-white p-2 mt-2 w-full rounded-lg">add to cart</button>
+              <button onClick={() => addToCart(product.id)} className="bg-green-600 text-white p-2 mt-2 w-full rounded-lg">add to cart</button>
             </div>
           </div>
         ))}
       </div>
-    </>
+    </section>
   )
 }
