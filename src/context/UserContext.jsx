@@ -1,3 +1,4 @@
+import { jwtDecode } from 'jwt-decode';
 import { useEffect, useState } from 'react';
 import { createContext}  from 'react'
 
@@ -8,6 +9,8 @@ export default function UserContextProvider(props) {
   useEffect(() => {
     if (localStorage.getItem('user-token')) {
       setUserLogin(localStorage.getItem('user-token'));
+      let token = jwtDecode(localStorage.getItem('user-token'))
+      localStorage.setItem('userId', token.id);
     } else {
       setUserLogin(null);
     }

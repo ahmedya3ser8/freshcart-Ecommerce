@@ -1,20 +1,26 @@
-import React, { useContext } from 'react'
+import React, { useContext, useState } from 'react'
 import { Link } from 'react-router-dom';
 import useProducts from '../../hooks/useProducts';
 import { CartContext } from '../../context/CartContext';
 import toast from 'react-hot-toast';
 
 export default function PopularProducts() {
+  let [loading, setLoading] = useState(false);
+  let [currentId, setCurrentId] = useState('');
   let {data, isError, error, isLoading} = useProducts();
   let {addProductToCart} = useContext(CartContext);
 
   async function addToCart(productId) {
+    setCurrentId(productId);
+    setLoading(true);
     let res = await addProductToCart(productId);
     if (res.data.status === "success") {
+      setLoading(false);
       toast.success(res.data.message, {
         position: 'top-right'
       })
     } else {
+      setLoading(false);
       toast.error(res.data.message, {
         position: 'top-right'
       })
@@ -54,7 +60,9 @@ export default function PopularProducts() {
               <span className="heart absolute top-3 right-3 cursor-pointer">
                 <i className="fa-solid fa-heart text-xl"></i>
               </span>
-              <button onClick={() => addToCart(product.id)} className="bg-green-600 text-white p-2 mt-2 w-full rounded-lg">add to cart</button>
+              <button onClick={() => addToCart(product.id)} className="bg-green-600 text-white p-2 mt-2 w-full rounded-lg">
+                {loading && currentId === product.id ? <i className='fas fa-spinner fa-spin'></i> : 'add to cart'}
+              </button>
             </div>
           </div>
         ))}

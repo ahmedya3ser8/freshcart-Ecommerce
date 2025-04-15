@@ -1,35 +1,43 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { CartContext } from '../../context/CartContext'
 import toast from 'react-hot-toast';
+import { Link } from 'react-router-dom';
 
 export default function Cart() {
   let [cartDetails, setCartDetails] = useState([]);
   let [cartItems, setCartItems] = useState(0);
+  let [cartId, setCartId] = useState('');
   let {getLoggedUserCart, updateProductCartQuantity, deleteProductFromCart, clearProductsCart} = useContext(CartContext);
   async function getAllCartProducts() {
     let res = await getLoggedUserCart();
     if (res.data.status === 'success') {
+      setCartId(res.data.cartId);
       setCartDetails(res.data.data);
-      setCartItems(res.data.numOfCartItems)
+      setCartItems(res.data.numOfCartItems);
     }
   }
   async function updateProductQuantity(productId, newCount) {
-    let res = await updateProductCartQuantity(productId, newCount);
-    if (res.data.status === 'success') {
-      setCartDetails(res.data.data);
-      toast.success('product quantity updated successfully', {
-        position: 'top-right'
-      })
+    if (newCount === 0) {
+      deleteProduct(productId);
     } else {
-      toast.error('something error', {
-        position: 'top-right'
-      })
+      let res = await updateProductCartQuantity(productId, newCount);
+      if (res.data.status === 'success') {
+        setCartDetails(res.data.data);
+        toast.success('product quantity updated successfully', {
+          position: 'top-right'
+        })
+      } else {
+        toast.error('something error', {
+          position: 'top-right'
+        })
+      }
     }
   }
   async function deleteProduct(productId) {
     let res = await deleteProductFromCart(productId);
     if (res.data.status === 'success') {
       setCartDetails(res.data.data);
+      setCartItems(res.data.numOfCartItems)
       toast.success('product deleted successfully', {
         position: 'top-right'
       })
@@ -43,6 +51,7 @@ export default function Cart() {
     let res = await clearProductsCart();    
     if (res.data.message === 'success') {
       setCartDetails(null);
+      setCartItems(0);
       toast.success('cart deleted successfully', {
         position: 'top-right'
       })
@@ -140,7 +149,9 @@ export default function Cart() {
             <input placeholder="Coupon Code" className="w-full px-2 h-[50px] rounded-lg border-none focus:ring-0 focus:shadow-none focus:border-none" type="text" />
             <button className="absolute right-[5px] top-[10%] py-2 px-3 bg-green-500 text-white rounded-md">Apply</button>
           </div>
-          <button className="p-2 w-full bg-green-500 text-white rounded-full py-3">Proceed To Checkout</button>
+          <Link to={`/checkout/${cartId}`}>
+            <button className="p-2 w-full bg-green-500 text-white rounded-full py-3">Proceed To Checkout</button>
+          </Link>
         </div>
       </div>
     </div>

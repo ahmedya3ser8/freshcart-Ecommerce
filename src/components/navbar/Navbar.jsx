@@ -32,6 +32,9 @@ export default function Navbar() {
                 <li>
                   <NavLink to="/brands" className='text-gray-400 p-2 text-lg font-semibold transition-colors'>Brands</NavLink>
                 </li>
+                <li>
+                  <NavLink to="/allorders" className='text-gray-400 p-2 text-lg font-semibold transition-colors'>All Orders</NavLink>
+                </li>
               </ul>
             </> : null 
           }
