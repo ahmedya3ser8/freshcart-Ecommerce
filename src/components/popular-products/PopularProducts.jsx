@@ -1,20 +1,23 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom';
 import useProducts from '../../hooks/useProducts';
 import { CartContext } from '../../context/CartContext';
 import toast from 'react-hot-toast';
+import { WishlistContext } from '../../context/WishlistContext';
 
 export default function PopularProducts() {
   let [loading, setLoading] = useState(false);
   let [currentId, setCurrentId] = useState('');
+  let [productIds, setProductIds] = useState([]);
   let {data, isError, error, isLoading} = useProducts();
-  let {addProductToCart} = useContext(CartContext);
-
+  let {addProductToCart, setNumOfCartItems, numOfCartItems} = useContext(CartContext);
+  let {addProductToWishlist, removeProductFromWishlist, numOfWishlistItems, setNumOfWishlistItems} = useContext(WishlistContext);
   async function addToCart(productId) {
     setCurrentId(productId);
     setLoading(true);
     let res = await addProductToCart(productId);
     if (res.data.status === "success") {
+      setNumOfCartItems(numOfCartItems + 1);
       setLoading(false);
       toast.success(res.data.message, {
         position: 'top-right'
@@ -26,7 +29,41 @@ export default function PopularProducts() {
       })
     }
   }
-
+  async function addToWishlist(productId) {
+    let res = await addProductToWishlist(productId);
+    if (res.data.status === "success") {
+      setNumOfWishlistItems(numOfWishlistItems + 1)
+      localStorage.setItem('productIds', JSON.stringify(res.data.data))
+      setProductIds(res.data.data);
+      toast.success(res.data.message, {
+        position: 'top-right'
+      })
+    } else {
+      toast.error(res.data.message, {
+        position: 'top-right'
+      })
+    }
+  }
+  async function removeProduct(productId) {
+    let res = await removeProductFromWishlist(productId);
+    if (res.data.status === "success") {
+      setNumOfWishlistItems(numOfWishlistItems - 1)
+      localStorage.setItem('productIds', JSON.stringify(res.data.data))
+      setProductIds(res.data.data);
+      toast.success(res.data.message, {
+        position: 'top-right'
+      })
+    } else {
+      toast.error(res.data.message, {
+        position: 'top-right'
+      })
+    }
+  }
+  useEffect(() => {
+    if (localStorage.getItem('productIds')) {
+      setProductIds(JSON.parse(localStorage.getItem('productIds')))
+    }
+  }, []);
   if (isError) {
     return <p> {error} </p>
   }
@@ -57,9 +94,12 @@ export default function PopularProducts() {
                   {product.ratingsAverage}
                 </span>
               </div>
-              <span className="heart absolute top-3 right-3 cursor-pointer">
+              {productIds.includes(product.id) ? <span onClick={() => removeProduct(product.id)} className="heart absolute top-3 right-3 cursor-pointer">
+                <i className="fa-solid fa-heart text-xl text-red-500"></i>
+              </span> : 
+              <span onClick={() => addToWishlist(product.id)} className="heart absolute top-3 right-3 cursor-pointer">
                 <i className="fa-solid fa-heart text-xl"></i>
-              </span>
+              </span>}
               <button onClick={() => addToCart(product.id)} className="bg-green-600 text-white p-2 mt-2 w-full rounded-lg">
                 {loading && currentId === product.id ? <i className='fas fa-spinner fa-spin'></i> : 'add to cart'}
               </button>

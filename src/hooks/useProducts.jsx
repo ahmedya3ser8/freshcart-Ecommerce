@@ -6,7 +6,7 @@ export default function useProducts() {
     return axios.get('https://ecommerce.routemisr.com/api/v1/products')
   }
   let productInfo = useQuery({
-    queryKey: ['popularProduct'],
+    queryKey: ['popularProducts'],
     queryFn: getAllProducts,
     // staleTime: 7000,
     // retry: 4,
@@ -14,7 +14,7 @@ export default function useProducts() {
     // refetchInterval: 3000,
     // refetchIntervalInBackground: true,
     // refetchOnWindowFocus: true,
-    // gcTime: 5000,
+    gcTime: 1000 * 60,
     select: (data) => data.data.data
   })
   return productInfo;

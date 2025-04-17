@@ -20,6 +20,8 @@ import { Toaster } from 'react-hot-toast';
 import Checkout from './pages/checkout/Checkout'
 import OrderContextProvider from './context/OrderContext'
 import AllOrders from './pages/all-orders/AllOrders'
+import Wishlist from './pages/wishlist/Wishlist';
+import WishlistContextProvider from './context/WishlistContext'
 
 let query = new QueryClient();
 
@@ -32,6 +34,7 @@ let routes = createBrowserRouter([
     {path: 'brands', element: <ProtectedRoute> <Brands /> </ProtectedRoute> },
     {path: 'allorders', element: <ProtectedRoute> <AllOrders /> </ProtectedRoute> },
     {path: 'cart', element: <ProtectedRoute> <Cart /> </ProtectedRoute> },
+    {path: 'wishlist', element: <ProtectedRoute> <Wishlist /> </ProtectedRoute> },
     {path: 'checkout/:cartId', element: <ProtectedRoute> <Checkout /> </ProtectedRoute> },
     {path: 'register', element: <AuthRoute> <Register /> </AuthRoute> },
     {path: 'login', element: <AuthRoute> <Login /> </AuthRoute> },
@@ -46,8 +49,10 @@ function App() {
         <QueryClientProvider client={query}>
           <CartContextProvider>
             <OrderContextProvider>
-              <RouterProvider router={routes} ></RouterProvider>
-              <Toaster />
+              <WishlistContextProvider>
+                <RouterProvider router={routes} ></RouterProvider>
+                <Toaster />
+              </WishlistContextProvider>
             </OrderContextProvider>
             <ReactQueryDevtools />
           </CartContextProvider>

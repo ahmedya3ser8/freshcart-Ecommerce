@@ -5,15 +5,14 @@ import { Link } from 'react-router-dom';
 
 export default function Cart() {
   let [cartDetails, setCartDetails] = useState([]);
-  let [cartItems, setCartItems] = useState(0);
   let [cartId, setCartId] = useState('');
-  let {getLoggedUserCart, updateProductCartQuantity, deleteProductFromCart, clearProductsCart} = useContext(CartContext);
+  let {loading, getLoggedUserCart, updateProductCartQuantity, deleteProductFromCart, clearProductsCart, setNumOfCartItems, numOfCartItems} = useContext(CartContext);
   async function getAllCartProducts() {
     let res = await getLoggedUserCart();
     if (res.data.status === 'success') {
       setCartId(res.data.cartId);
       setCartDetails(res.data.data);
-      setCartItems(res.data.numOfCartItems);
+      setNumOfCartItems(res.data.numOfCartItems);
     }
   }
   async function updateProductQuantity(productId, newCount) {
@@ -36,8 +35,8 @@ export default function Cart() {
   async function deleteProduct(productId) {
     let res = await deleteProductFromCart(productId);
     if (res.data.status === 'success') {
+      setNumOfCartItems(res.data.numOfCartItems);
       setCartDetails(res.data.data);
-      setCartItems(res.data.numOfCartItems)
       toast.success('product deleted successfully', {
         position: 'top-right'
       })
@@ -51,7 +50,7 @@ export default function Cart() {
     let res = await clearProductsCart();    
     if (res.data.message === 'success') {
       setCartDetails(null);
-      setCartItems(0);
+      setNumOfCartItems(0);
       toast.success('cart deleted successfully', {
         position: 'top-right'
       })
@@ -69,7 +68,7 @@ export default function Cart() {
     <div className="flex justify-between items-center">
       <div className="flex items-center gap-1">
         <h2 className="text-green-500 text-3xl font-medium">Cart</h2>
-        <span className="text-main-color"> {cartItems} items</span>
+        <span className="text-main-color"> {numOfCartItems} items</span>
       </div>
       <button onClick={() => clearCart()} className="py-2 px-3 rounded-md bg-green-500 text-white">
         Remove All
@@ -78,47 +77,53 @@ export default function Cart() {
     </div>
     <div className="grid grid-cols-1 md:grid-cols-[1fr_350px] gap-5 mt-7">
       <div className="bg-gray-100 p-5 rounded-md">
-        {cartDetails?.products?.map((product) => (
-          <div key={product.product.id} className="product flex flex-col gap-3 md:flex-row md:items-center border-b border-gray-300 py-5 first:pt-0 last:border-b-0">
-            <div className="image mb-3">
-              <img src={product.product.imageCover} className="w-32" alt="product-image" />
-            </div>
-            <div className="content flex justify-between items-center flex-1">
-              <div className="caption">
-                <span className="text-gray-400 text-sm mb-2 block">{product.product.category.name}</span>
-                <h3 className="text-green-500 text-xl font-semibold">{product.product.title}</h3>
-                <div className="star bg-[#fafafa] rounded-3xl py-1 px-2 w-fit flex items-center gap-1">
-                  <span>{product.product.ratingsAverage}</span>
-                  <i className="fa-solid fa-star text-yellow-500" />
-                </div>
+        {!loading ? ( 
+          cartDetails?.products?.length > 0 ? cartDetails?.products?.map((product) => (
+            <div key={product.product.id} className="product flex flex-col gap-3 md:flex-row md:items-center border-b border-gray-300 py-5 first:pt-0 last:border-b-0">
+              <div className="image mb-3">
+                <img src={product.product.imageCover} className="w-32" alt="product-image" />
               </div>
-              <div className="text-right">
-                <span className="text-xl"> {product.price} EGP</span>
-                <div className="flex items-center gap-2 mt-3">
-                  <span onClick={() => deleteProduct(product.product.id)} className="h-10 px-3 text-green-500 flex justify-center items-center cursor-pointer border border-green-500 rounded-xl transition-all duration-300 hover:bg-green-500 hover:text-white">
-                    <i className="fa-solid fa-trash-can ms-1" />
-                  </span>
-                  <div className="btns overflow-hidden flex items-center text-text-color w-[120px] h-10 border border-green-500 rounded-xl">
-                    <button onClick={() => updateProductQuantity(product.product.id, product.count - 1 )} className="w-[30%] h-full transition-all duration-300 hover:bg-green-500 hover:text-white">
-                      <i className="fa-solid fa-minus" />
-                    </button>
-                    <span className="w-[40%] h-full flex justify-center items-center"> {product.count} </span>
-                    <button onClick={() => updateProductQuantity(product.product.id, product.count + 1 )} className="w-[30%] h-full transition-all duration-300 hover:bg-green-500 hover:text-white">
-                      <i className="fa-solid fa-plus" />
-                    </button>
+              <div className="content flex justify-between items-center flex-1">
+                <div className="caption">
+                  <span className="text-gray-400 text-sm mb-2 block">{product.product.category.name}</span>
+                  <h3 className="text-green-500 text-xl font-semibold">{product.product.title}</h3>
+                  <div className="star bg-[#fafafa] rounded-3xl py-1 px-2 w-fit flex items-center gap-1">
+                    <span>{product.product.ratingsAverage}</span>
+                    <i className="fa-solid fa-star text-yellow-500" />
+                  </div>
+                </div>
+                <div className="text-right">
+                  <span className="text-xl"> {product.price} EGP</span>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span onClick={() => deleteProduct(product.product.id)} className="h-10 px-3 text-green-500 flex justify-center items-center cursor-pointer border border-green-500 rounded-xl transition-all duration-300 hover:bg-green-500 hover:text-white">
+                      <i className="fa-solid fa-trash-can ms-1" />
+                    </span>
+                    <div className="btns overflow-hidden flex items-center text-text-color w-[120px] h-10 border border-green-500 rounded-xl">
+                      <button onClick={() => updateProductQuantity(product.product.id, product.count - 1 )} className="w-[30%] h-full transition-all duration-300 hover:bg-green-500 hover:text-white">
+                        <i className="fa-solid fa-minus" />
+                      </button>
+                      <span className="w-[40%] h-full flex justify-center items-center"> {product.count} </span>
+                      <button onClick={() => updateProductQuantity(product.product.id, product.count + 1 )} className="w-[30%] h-full transition-all duration-300 hover:bg-green-500 hover:text-white">
+                        <i className="fa-solid fa-plus" />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-        {/* <p className="text-lg font-medium flex justify-center items-center h-full">
-          You have currently <span className="mx-1 text-text-color font-bold"> 0 items</span> in your cart.
-          <a className="underline cursor-pointer text-gray-400 ms-1">
+          )) : 
+          <p className="text-lg font-medium flex justify-center items-center h-full">
+          You have currently <span className="mx-1 text-green-500 font-bold"> 0 items</span> in your cart.
+          <Link to={'/products'} className="underline cursor-pointer text-gray-500 ms-1">
             Go To Shop
             <i className="fa-solid fa-arrow-right ms-1 text-text-color" />
-          </a>
-        </p> */}
+          </Link>
+          </p>
+          ) : 
+          <div className='flex justify-center items-center h-screen'>
+            <span className="loader"></span>
+          </div>
+        }
       </div>
       <div className="bg-gray-100 p-5 rounded-md h-fit">
         <h3 className="text-text-color text-2xl mb-4">Order Summary</h3>

@@ -2,9 +2,13 @@ import React, { useContext } from 'react'
 import logo from '../../assets/freshcart-logo.svg'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 import { UserContext } from '../../context/UserContext'
+import { CartContext } from '../../context/CartContext';
+import { WishlistContext } from '../../context/WishlistContext';
 
 export default function Navbar() {
-  let { userLogin, setUserLogin } = useContext(UserContext);
+  let { userLogin, setUserLogin} = useContext(UserContext);
+  let { numOfCartItems} = useContext(CartContext);
+  let { numOfWishlistItems} = useContext(WishlistContext);
   let navigate = useNavigate();
   function signout() {
     localStorage.removeItem('user-token');
@@ -55,7 +59,16 @@ export default function Navbar() {
             </li>
             {userLogin !== null ? <>
               <li>
-              <NavLink to="/cart" className='text-gray-400 p-2 text-lg font-semibold transition-colors'>cart</NavLink>
+                <NavLink to="/cart" className='text-gray-400 p-2 text-lg font-semibold transition-colors relative'>
+                  <i className="fa-solid fa-cart-shopping"></i>
+                  <span className='absolute top-[-5px] right-[-5px] text-sm bg-green-500 text-white size-5 rounded-full flex justify-center items-center'>{numOfCartItems}</span>
+                </NavLink>
+              </li>
+              <li>
+                <NavLink to="/wishlist" className='text-gray-400 p-2 text-lg font-semibold transition-colors relative'>
+                  <i className="fa-solid fa-heart"></i>
+                  <span className='absolute top-[-5px] right-[-5px] text-sm bg-green-500 text-white size-5 rounded-full flex justify-center items-center'>{numOfWishlistItems}</span>
+                </NavLink>
               </li>
               <span onClick={signout} className='text-gray-400 p-2 text-lg font-semibold transition-colors cursor-pointer'>logout</span>
               </> : <>
