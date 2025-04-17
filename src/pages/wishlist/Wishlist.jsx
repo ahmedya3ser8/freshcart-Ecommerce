@@ -70,7 +70,7 @@ export default function Wishlist() {
           </div>
         )) : 
         <div className="flex justify-center items-center h-full">
-            <p className="text-red-600 text-2xl font-medium">there are no items in your wishlist</p>
+          <p className="text-red-600 text-2xl font-medium">there are no products in your wishlist</p>
         </div>
         }
       </div>
