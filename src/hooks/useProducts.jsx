@@ -3,7 +3,7 @@ import axios from 'axios'
 
 export default function useProducts() {
   function getAllProducts() {
-    return axios.get('https://ecommerce.routemisr.com/api/v1/products')
+    return axios.get('/api/v1/products')
   }
   let productInfo = useQuery({
     queryKey: ['popularProducts'],

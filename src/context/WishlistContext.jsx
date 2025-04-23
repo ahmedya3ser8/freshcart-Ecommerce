@@ -10,14 +10,14 @@ export default function WishlistContextProvider(props) {
   }
   async function addProductToWishlist(productId) {
     try {
-      return await axios.post(`https://ecommerce.routemisr.com/api/v1/wishlist`, {productId}, {headers})
+      return await axios.post(`/api/v1/wishlist`, {productId}, {headers})
     } catch (error) {
       return error
     }
   }
   async function getAllProductsWishlist() {
     try {
-      let res = await axios.get(`https://ecommerce.routemisr.com/api/v1/wishlist`, {headers})
+      let res = await axios.get(`/api/v1/wishlist`, {headers})
       setNumOfWishlistItems(res.data.count)
       return res;
     } catch (error) {
@@ -26,7 +26,7 @@ export default function WishlistContextProvider(props) {
   }
   async function removeProductFromWishlist(productId) {
     try {
-      return await axios.delete(`https://ecommerce.routemisr.com/api/v1/wishlist/${productId}`, {headers})
+      return await axios.delete(`/api/v1/wishlist/${productId}`, {headers})
     } catch (error) {
       return error
     }

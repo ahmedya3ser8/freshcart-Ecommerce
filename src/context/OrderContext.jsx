@@ -9,7 +9,7 @@ export default function OrderContextProvider(props) {
   }
   async function onlinePayment(cartId, url, data) {
     try {
-      return await axios.post(`https://ecommerce.routemisr.com/api/v1/orders/checkout-session/${cartId}?url=${url}`, {
+      return await axios.post(`/api/v1/orders/checkout-session/${cartId}?url=${url}`, {
         shippingAddress: data
       }, {
         headers

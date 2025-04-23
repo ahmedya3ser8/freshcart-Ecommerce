@@ -1,10 +1,11 @@
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios'
+import OrderItem from '../../components/order-item/OrderItem';
 
 export default function AllOrders() {
   let userId = localStorage.getItem('userId');
   function getAllUserOrders() {
-    return axios.get(`https://ecommerce.routemisr.com/api/v1/orders/user/${userId}`);
+    return axios.get(`/api/v1/orders/user/${userId}`);
   }
   let {data, isLoading, isError, error} = useQuery({
     queryKey: ['allorders'],
@@ -36,21 +37,7 @@ export default function AllOrders() {
                 </div>
                 <div className="h-[250px] overflow-y-auto border border-[#D1D1D8]">
                   {order.cartItems.map((product) => (
-                    <div key={product._id} className="product flex gap-2 border-b border-gray-300 last:border-b-0 py-4">
-                      <div className="image w-[100px] h-[100px]">
-                        <img src={product.product.imageCover} className="w-full h-full rounded-md object-cover" alt="product-image" />
-                      </div>
-                      <div className="content flex flex-1 justify-between items-center">
-                        <div className="">
-                          <h3 className="text-xl text-[#090f41] mb-1">{product.product.title.split(' ', 2).join(' ')}</h3>
-                          <span className="text-gray-300">DeFacto</span>
-                        </div>
-                        <div className="">
-                          <span className="block text-xl text-[#090f41] mb-1"> {product.price} EGP</span>
-                          <span className="text-gray-300">Qyt: {product.count} </span>
-                        </div>
-                      </div>
-                    </div>
+                    <OrderItem key={product._id} {...product} />
                   ))}
                 </div>
                 <div className="grid grid-cols-1 md:grid-cols-[60%_minmax(0,1fr)] gap-5 py-5">

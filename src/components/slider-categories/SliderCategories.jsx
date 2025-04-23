@@ -3,6 +3,7 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay } from 'swiper/modules';
 import 'swiper/css';
 import { useQuery } from '@tanstack/react-query';
+import CategoryItem from '../category-item/CategoryItem';
 
 export default function SliderCategories() {
 
@@ -47,10 +48,7 @@ export default function SliderCategories() {
           >
           {data.map((cat) => (
             <SwiperSlide>
-              <div key={cat._id} className="border border-green-500 p-2 rounded-2xl overflow-hidden">
-                <img src={cat.image} className="h-[150px] w-full object-contain" alt="category-image" />
-                <h3 className="text-green-600 text-xl text-center my-3 mx-2"> {cat.name} </h3>
-              </div>
+              <CategoryItem key={cat._id} {...cat} />
             </SwiperSlide>
           ))}
         </Swiper>

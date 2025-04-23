@@ -22,6 +22,7 @@ import OrderContextProvider from './context/OrderContext'
 import AllOrders from './pages/all-orders/AllOrders'
 import Wishlist from './pages/wishlist/Wishlist';
 import WishlistContextProvider from './context/WishlistContext'
+import './services/axios.global.js'
 
 let query = new QueryClient();
 

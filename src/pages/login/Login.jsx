@@ -13,7 +13,7 @@ export default function Login() {
   async function handleLogin(values) {
     try {
       setIsLoading(true);
-      let {data} = await axios.post('https://ecommerce.routemisr.com/api/v1/auth/signin', values)
+      let {data} = await axios.post('/api/v1/auth/signin', values)
       setIsLoading(false);
       if (data.message === "success") {
         localStorage.setItem('user-token', data.token);

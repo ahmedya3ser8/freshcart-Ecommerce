@@ -12,9 +12,9 @@ export default function ProductDetails() {
   }
   async function getProduct(id) {
     try {
-      let { data } = await axios.get(`https://ecommerce.routemisr.com/api/v1/products/${id}`);
+      let { data } = await axios.get(`/api/v1/products/${id}`);
       setProduct(data.data);
-      let relatedProducts = await axios.get(`https://ecommerce.routemisr.com/api/v1/products`, {
+      let relatedProducts = await axios.get(`/api/v1/products`, {
         params: {
           'category[in]': data.data.category._id
         }

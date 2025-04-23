@@ -6,7 +6,7 @@ export default function useCart() {
     token: localStorage.getItem('user-token')
   }
   function getAllCartProducts() {
-    return axios.get(`https://ecommerce.routemisr.com/api/v1/cart`, {
+    return axios.get(`/api/v1/cart`, {
       headers
     });
   }

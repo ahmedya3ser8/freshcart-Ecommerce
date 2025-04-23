@@ -6,15 +6,10 @@ export let CartContext = createContext();
 export default function CartContextProvider(props) {
   let [numOfCartItems, setNumOfCartItems] = useState(0);
   let [loading, setLoading] = useState(0);
-  let headers = {
-    token: localStorage.getItem('user-token')
-  }
   async function addProductToCart(productId) {
     try {
-      return await axios.post(`https://ecommerce.routemisr.com/api/v1/cart`, {
+      return await axios.post(`/api/v1/cart`, {
         productId
-      }, {
-        headers
       })
     } catch (error) {
       return error;
@@ -23,9 +18,7 @@ export default function CartContextProvider(props) {
   async function getLoggedUserCart() {
     setLoading(true);
     try {
-      let res = await axios.get(`https://ecommerce.routemisr.com/api/v1/cart`, {
-        headers
-      });
+      let res = await axios.get(`/api/v1/cart`);
       setNumOfCartItems(res.data.numOfCartItems)
       return res;
     } catch (error) {
@@ -36,10 +29,8 @@ export default function CartContextProvider(props) {
   }
   async function updateProductCartQuantity(productId, newCount) {
     try {
-      return await axios.put(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, {
+      return await axios.put(`/api/v1/cart/${productId}`, {
         count: newCount
-      }, {
-        headers
       });
     } catch (error) {
       return error;
@@ -47,18 +38,14 @@ export default function CartContextProvider(props) {
   }
   async function deleteProductFromCart(productId) {
     try {
-      return await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart/${productId}`, {
-        headers
-      });
+      return await axios.delete(`/api/v1/cart/${productId}`);
     } catch (error) {
       return error;
     }
   }
   async function clearProductsCart() {
     try {
-      return await axios.delete(`https://ecommerce.routemisr.com/api/v1/cart`, {
-        headers
-      });
+      return await axios.delete(`/api/v1/cart`);
     } catch (error) {
       return error;
     }
