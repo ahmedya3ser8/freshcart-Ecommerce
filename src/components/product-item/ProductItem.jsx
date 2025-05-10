@@ -64,7 +64,7 @@ export default function ProductItem({id,imageCover,category,title,price,ratingsA
   }, []);
   return (
     <div className="card border border-green-500 pt-4 pb-2 px-2 relative rounded-2xl">
-      <Link to={`product/${id}`}>
+      <Link to={`/product/${id}`}>
         <div className="image cursor-pointer">
           <img src={imageCover} className="w-full h-[150px] object-contain" alt="product-image" />
         </div>
